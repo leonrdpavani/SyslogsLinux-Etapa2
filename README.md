@@ -34,22 +34,19 @@ java LeitorSyslog syslog
 
 ## Como o programa funciona (passo a passo)
 
-1. Abre o arquivo com `BufferedReader` e le **uma linha por vez** (nao carrega
-   o arquivo inteiro na memoria - syslog pode ser muito grande).
-2. Para cada linha, verifica se ela contem alguma palavra-chave de rede.
-   As palavras ficam em dois vetores (`String[]`):
-   - `PALAVRAS_DESCONEXAO`: `Link DOWN`, `carrier lost`, `CTRL-EVENT-DISCONNECTED`,
-     `DHCPRELEASE`, `deactivating device`, `disconnected`...
-   - `PALAVRAS_CONEXAO`: `Link UP`, `carrier acquired`, `CTRL-EVENT-CONNECTED`,
-     `bound to`, `connected`...
-3. A desconexao e testada **primeiro** de proposito: a palavra `disconnected`
-   contem dentro dela a palavra `connected`, entao, se testassemos a conexao
+1. Abre o arquivo com `Scanner` e le **uma linha por vez** (nao carrega o
+   arquivo inteiro na memoria - o syslog pode ser muito grande).
+2. Pega a data e a hora com `linha.substring(0, 15)`, porque no syslog os 15
+   primeiros caracteres sao sempre a data e a hora.
+3. Usa `linha.contains(...)` para ver se a linha fala de rede:
+   - desconexao: `Link DOWN`, `carrier lost`, `DISCONNECTED`, `DHCPRELEASE`
+   - conexao: `Link UP`, `carrier acquired`, `CONNECTED`, `bound to`
+4. A desconexao e testada **primeiro** de proposito: a palavra `DISCONNECTED`
+   contem dentro dela a palavra `CONNECTED`, entao, se testassemos a conexao
    antes, um evento de desconexao seria classificado errado.
-4. Se a linha for um evento de rede, o programa separa duas partes:
-   - **data e hora**: sao os 15 primeiros caracteres da linha (formato fixo do syslog);
-   - **mensagem**: o texto que vem depois de `]: `.
-5. No final mostra um resumo com o total de linhas lidas e a quantidade de
-   conexoes e desconexoes.
+5. Se a linha for um evento de rede, imprime data/hora + tipo + a linha.
+   As outras linhas sao simplesmente ignoradas.
+6. No final mostra quantas conexoes e quantas desconexoes foram encontradas.
 
 ## Estrutura do syslog
 

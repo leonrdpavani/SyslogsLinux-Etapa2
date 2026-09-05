@@ -1,135 +1,56 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
+import java.util.Scanner;
 
 /*
  * Etapa 2 - Interagindo com o syslog
  *
- * Este programa le o arquivo de log do Linux (/var/log/syslog) linha por linha
- * e mostra na tela apenas os eventos de CONEXAO e DESCONEXAO de rede,
- * junto com a data e a hora em que cada evento aconteceu.
+ * Le o syslog do Linux linha por linha e mostra na tela somente
+ * os eventos de conexao e desconexao de rede, com data e hora.
  */
 public class LeitorSyslog {
 
-    // Palavras que indicam que a rede CONECTOU
-    static String[] PALAVRAS_CONEXAO = {
-        "Link UP",
-        "carrier acquired",
-        "CTRL-EVENT-CONNECTED",
-        "bound to",
-        "state change: config -> ip-config",
-        "device (eth0): state change: ip-config -> ip-check",
-        "connected",
-        "NetworkManager state is now CONNECTED"
-    };
+    public static void main(String[] args) throws Exception {
 
-    // Palavras que indicam que a rede DESCONECTOU
-    static String[] PALAVRAS_DESCONEXAO = {
-        "Link DOWN",
-        "carrier lost",
-        "CTRL-EVENT-DISCONNECTED",
-        "DHCPRELEASE",
-        "deactivating device",
-        "disconnected",
-        "NetworkManager state is now DISCONNECTED"
-    };
-
-    public static void main(String[] args) {
-
-        // Caminho do syslog. Se o usuario passar um caminho, usamos ele.
+        // Caminho do syslog (pode ser passado na linha de comando)
         String caminho = "/var/log/syslog";
         if (args.length > 0) {
             caminho = args[0];
         }
 
-        System.out.println("==================================================");
-        System.out.println(" EVENTOS DE REDE ENCONTRADOS NO SYSLOG");
-        System.out.println(" Arquivo lido: " + caminho);
-        System.out.println("==================================================");
+        Scanner arquivo = new Scanner(new File(caminho));
+
+        int conexoes = 0;
+        int desconexoes = 0;
+
+        System.out.println("EVENTOS DE REDE NO SYSLOG (" + caminho + ")");
         System.out.println();
 
-        int totalLinhas = 0;
-        int totalConexoes = 0;
-        int totalDesconexoes = 0;
+        // Enquanto existir linha no arquivo...
+        while (arquivo.hasNextLine()) {
+            String linha = arquivo.nextLine();
 
-        try {
-            // Abre o arquivo para leitura
-            BufferedReader leitor = new BufferedReader(new FileReader(caminho));
-            String linha = leitor.readLine();
+            // Os 15 primeiros caracteres da linha do syslog sao a data e a hora
+            String dataHora = linha.substring(0, 15);
 
-            // Enquanto existir linha para ler...
-            while (linha != null) {
-                totalLinhas = totalLinhas + 1;
+            // Testamos a desconexao primeiro, porque a palavra "disconnected"
+            // tem dentro dela a palavra "connected" e isso confundiria o programa.
+            if (linha.contains("Link DOWN") || linha.contains("carrier lost")
+                    || linha.contains("DISCONNECTED") || linha.contains("DHCPRELEASE")) {
 
-                // Testamos a desconexao primeiro, porque a palavra "disconnected"
-                // tem dentro dela a palavra "connected" e isso confundiria o programa.
-                if (temPalavra(linha, PALAVRAS_DESCONEXAO)) {
-                    mostrarEvento("DESCONEXAO", linha);
-                    totalDesconexoes = totalDesconexoes + 1;
-                } else if (temPalavra(linha, PALAVRAS_CONEXAO)) {
-                    mostrarEvento("CONEXAO   ", linha);
-                    totalConexoes = totalConexoes + 1;
-                }
+                System.out.println(dataHora + "  DESCONEXAO  ->  " + linha);
+                desconexoes = desconexoes + 1;
 
-                linha = leitor.readLine();
-            }
+            } else if (linha.contains("Link UP") || linha.contains("carrier acquired")
+                    || linha.contains("CONNECTED") || linha.contains("bound to")) {
 
-            leitor.close();
-
-        } catch (Exception erro) {
-            System.out.println("Nao foi possivel ler o arquivo: " + erro.getMessage());
-            System.out.println("Dica: rode com sudo ou passe o caminho do arquivo.");
-            System.out.println("Exemplo: java LeitorSyslog syslog");
-            return;
-        }
-
-        System.out.println();
-        System.out.println("==================================================");
-        System.out.println(" RESUMO");
-        System.out.println(" Linhas lidas no syslog .....: " + totalLinhas);
-        System.out.println(" Eventos de conexao .........: " + totalConexoes);
-        System.out.println(" Eventos de desconexao ......: " + totalDesconexoes);
-        System.out.println(" Total de eventos de rede ...: " + (totalConexoes + totalDesconexoes));
-        System.out.println("==================================================");
-    }
-
-    // Verifica se a linha contem alguma das palavras da lista
-    static boolean temPalavra(String linha, String[] palavras) {
-        for (int i = 0; i < palavras.length; i++) {
-            if (linha.contains(palavras[i])) {
-                return true;
+                System.out.println(dataHora + "  CONEXAO     ->  " + linha);
+                conexoes = conexoes + 1;
             }
         }
-        return false;
-    }
 
-    // Mostra o evento formatado na tela
-    static void mostrarEvento(String tipo, String linha) {
-        System.out.println("[" + tipo + "] " + pegarDataHora(linha));
-        System.out.println("             " + pegarMensagem(linha));
+        arquivo.close();
+
         System.out.println();
-    }
-
-    /*
-     * No syslog do Linux os 15 primeiros caracteres da linha sao a data e a hora.
-     * Exemplo: "Sep  5 11:34:01 ubuntu NetworkManager[812]: ..."
-     *           |-- 15 caracteres --|
-     */
-    static String pegarDataHora(String linha) {
-        if (linha.length() >= 15) {
-            return linha.substring(0, 15);
-        }
-        return linha;
-    }
-
-    // Pega o texto do evento (o que vem depois do nome do programa e dos ":")
-    static String pegarMensagem(String linha) {
-        int posicao = linha.indexOf("]: ");
-        if (posicao > 0) {
-            return linha.substring(posicao + 3);
-        }
-        if (linha.length() > 15) {
-            return linha.substring(15).trim();
-        }
-        return linha;
+        System.out.println("Conexoes: " + conexoes + "   Desconexoes: " + desconexoes);
     }
 }
