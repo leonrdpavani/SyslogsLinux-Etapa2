@@ -1,0 +1,30 @@
+Sep  5 08:15:01 ubuntu CRON[1024]: (root) CMD (/usr/lib/php/sessionclean)
+Sep  5 08:15:03 ubuntu systemd[1]: Started Daily apt download activities.
+Sep  5 08:16:10 ubuntu kernel: [ 1201.334512] e1000e: eth0 NIC Link is Up 1000 Mbps Full Duplex
+Sep  5 08:16:10 ubuntu NetworkManager[812]: <info>  [1725534970.1] device (eth0): carrier acquired
+Sep  5 08:16:11 ubuntu NetworkManager[812]: <info>  [1725534971.4] device (eth0): Link UP
+Sep  5 08:16:12 ubuntu dhclient[1330]: DHCPREQUEST for 192.168.0.20 on eth0 to 192.168.0.1 port 67
+Sep  5 08:16:12 ubuntu dhclient[1330]: bound to 192.168.0.20 -- renewal in 1580 seconds
+Sep  5 08:16:13 ubuntu NetworkManager[812]: <info>  [1725534973.0] NetworkManager state is now CONNECTED_GLOBAL
+Sep  5 08:20:44 ubuntu systemd[1]: Starting Clean php session files...
+Sep  5 08:32:07 ubuntu wpa_supplicant[905]: wlan0: CTRL-EVENT-DISCONNECTED bssid=a4:2b:8c:11:22:33 reason=3
+Sep  5 08:32:07 ubuntu kernel: [ 2158.771002] wlan0: deauthenticating from a4:2b:8c:11:22:33 by local choice
+Sep  5 08:32:08 ubuntu NetworkManager[812]: <info>  [1725535928.2] device (wlan0): carrier lost
+Sep  5 08:32:09 ubuntu dhclient[1330]: DHCPRELEASE of 192.168.0.20 on wlan0 to 192.168.0.1 port 67
+Sep  5 08:33:15 ubuntu gnome-shell[1602]: Window manager warning: last_user_time is greater than comparison timestamp
+Sep  5 08:41:52 ubuntu wpa_supplicant[905]: wlan0: CTRL-EVENT-CONNECTED - Connection to a4:2b:8c:11:22:33 completed
+Sep  5 08:41:53 ubuntu NetworkManager[812]: <info>  [1725536513.7] device (wlan0): Link UP
+Sep  5 08:41:55 ubuntu dhclient[1330]: bound to 192.168.0.31 -- renewal in 1712 seconds
+Sep  5 09:02:11 ubuntu kernel: [ 3921.118440] usb 1-2: new high-speed USB device number 5 using xhci_hcd
+Sep  5 09:10:30 ubuntu snapd[744]: storehelpers.go:748 cannot refresh snap "core20": no updates available
+Sep  5 09:44:02 ubuntu kernel: [ 5432.900112] e1000e: eth0 NIC Link is Down
+Sep  5 09:44:02 ubuntu NetworkManager[812]: <info>  [1725540242.5] device (eth0): Link DOWN
+Sep  5 09:44:03 ubuntu NetworkManager[812]: <info>  [1725540243.1] deactivating device (eth0)
+Sep  5 09:44:03 ubuntu NetworkManager[812]: <info>  [1725540243.9] NetworkManager state is now DISCONNECTED
+Sep  5 10:05:17 ubuntu systemd[1]: Reloading OpenBSD Secure Shell server.
+Sep  5 10:12:40 ubuntu sshd[2210]: Accepted password for aluno from 192.168.0.44 port 55142 ssh2
+Sep  5 10:58:31 ubuntu NetworkManager[812]: <info>  [1725543511.3] device (eth0): carrier acquired
+Sep  5 10:58:32 ubuntu NetworkManager[812]: <info>  [1725543512.0] device (eth0): Link UP
+Sep  5 10:58:34 ubuntu dhclient[1330]: bound to 192.168.0.20 -- renewal in 1644 seconds
+Sep  5 10:58:35 ubuntu NetworkManager[812]: <info>  [1725543515.6] NetworkManager state is now CONNECTED_GLOBAL
+Sep  5 11:30:00 ubuntu CRON[2890]: (root) CMD (test -x /usr/sbin/anacron)
